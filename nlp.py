@@ -4,15 +4,24 @@ import speech
 from os import path
 from pywinauto import Desktop, Application
 from pywinauto.keyboard import SendKeys, KeySequenceError
-from pywinauto.timings import wait_until
-import re, time
+#from pywinauto.timings import wait_until
+from pywinauto import mouse
+import re, time, math
 import spacy
 import speech_recognition as sr
 import pyaudio
+from PIL import Image
 import PIL
+import cv2
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import pytesseract
+from spacy.lang.en.stop_words import STOP_WORDS
+import winsound
+pytesseract.pytesseract.tesseract_cmd='C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+
+frequency = 1500
+duration = 1000
 
 nlp=spacy.load('en') 
 
@@ -56,37 +65,85 @@ def start_app(app_name):
                     
 
 
-query = str(speech.press_record())       #converting speech to text using speech_to_text API 
 
-print(query) 
+while True:
+        winsound.Beep(frequency, duration)
+        time.sleep(1)
+        query = str(speech.press_record())       #converting speech to text using speech_to_text API 
+        #query=input("Enter Command (Type exit to quit): ")
+        if query.lower()=='exit':
+            break
+        else:
+            print(query) 
+        
+        doc=nlp(query)
+        
+        if not noun(doc):
+            pass
+        else:
+            name=noun(doc)[0]
+        if not adj(doc):
+            pass
+        else:
+            task=adj(doc)[0]
+          
+        if not verb(doc):
+            pass
+        else:
+            do=verb(doc)[0]
+        
+        words=[word.text.lower() for word in doc if word.is_stop==False]
+        
+        verbs, obj = words
+        print("Verb: ", verbs, " Obj: ", obj)
+        '''token=nlp("start")
+        similarity_start = token.similarity(nlp(verbs))
+        token=nlp("click")
+        similarity_click = token.similarity(nlp(verbs))
+        print("Similarity with \'start\': ", similarity_start)
+        print("Similarity with \'click\': ", similarity_click)'''
+        apps=[]
+        #if float(similarity_start)>0.5:
+        if verbs=='start':
+            start_app("chrome")
+        #elif float(similarity_click)>0.5:
+        elif verbs=='click':
+            time.sleep(2)
+            img = PIL.ImageGrab.grab()
+            imgplot = plt.imshow(img)
+            data=pytesseract.image_to_data(img)
+        
+            data=data.split()
+            #print(data)
+            
+            for i in range(len(data)):
+                if obj in data[i].lower():
+                    print("Match Found")
+                    #coord_x = int(data[i-5]) + int(data[i-3]/2)
+                    #coord_y = int(data[i-4]) + int(data[i-2]/2)
+                    coord_x = int(data[i-5]) + int(int(data[i-3])/2)
+                    coord_y = int(data[i-4]) + int(int(data[i-2])/2)
+                    mouse.click(button="left",coords=(coord_x,coord_y))
+                    print("Mouse Clicked")
+                    break
+        time.sleep(5)
 
-doc=nlp(query)
 
-if not noun(doc):
-    pass
-else:
-    name=noun(doc)[0]
-if not adj(doc):
-    pass
-else:
-    task=adj(doc)[0]
-  
-if not verb(doc):
-    pass
-else:
-    do=verb(doc)[0]
-from spacy.lang.en.stop_words import STOP_WORDS
-words=[word.text.lower() for word in doc if word.is_stop==False]
+#imge = Image.open(img)
+'''data=pytesseract.image_to_data(img)
 
-print(words)
+data=data.split()
+print(data)
 
-verb, obj = words
-token=nlp("start")
-similarity = token.similarity(nlp(verb))
-print(similarity)
-apps=[]
-if float(similarity)>0.5:
-    start_app(obj)
-time.sleep(2)
-img = PIL.ImageGrab.grab()
-imgplot = plt.imshow(img)
+for i in range(len(data)):
+    if "devalj" in data[i]:
+        print("Match Found")
+        #coord_x = int(data[i-5]) + int(data[i-3]/2)
+        #coord_y = int(data[i-4]) + int(data[i-2]/2)
+        coord_x = int(data[i-5]) + int(int(data[i-3])/2)
+        coord_y = int(data[i-4]) + int(int(data[i-2])/2)
+        mouse.click(button="left",coords=(coord_x,coord_y))
+        print("Mouse Moved")
+        break
+        '''
+        
