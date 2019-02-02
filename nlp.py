@@ -63,70 +63,84 @@ def start_app(app_name):
                 except:
                     continue
                     
+def single_click(text):
+    time.sleep(0.5)
+    img = PIL.ImageGrab.grab()
+    #imgplot = plt.imshow(img)
+    data=pytesseract.image_to_data(img)
 
+    data=data.split()
+    #print(data)
+    
+    for i in range(len(data)):
+        if ' '.join(text) in data[i].lower():
+            print("Match Found")
+            #coord_x = int(data[i-5]) + int(data[i-3]/2)
+            #coord_y = int(data[i-4]) + int(data[i-2]/2)
+            coord_x = int(data[i-5]) + int(int(data[i-3])/2)
+            coord_y = int(data[i-4]) + int(int(data[i-2])/2)
+            mouse.click(button="left",coords=(coord_x,coord_y))
+            print("Mouse Clicked")
+            break
 
+def wait(text):
+    for i in range(len(text)):
+            if text[i]=='seconds' or text[1]=='second':
+                wait_time = int(text[i-1])
+                print("Waiting...")
+                if(wait_time>5):
+                    time.sleep(wait_time-5)
 
 while True:
-        winsound.Beep(frequency, duration)
-        time.sleep(1)
-        query = str(speech.press_record())       #converting speech to text using speech_to_text API 
-        #query=input("Enter Command (Type exit to quit): ")
-        if query.lower()=='exit':
-            break
-        else:
-            print(query) 
-        
-        doc=nlp(query)
-        
-        if not noun(doc):
-            pass
-        else:
-            name=noun(doc)[0]
-        if not adj(doc):
-            pass
-        else:
-            task=adj(doc)[0]
-          
-        if not verb(doc):
-            pass
-        else:
-            do=verb(doc)[0]
-        
-        words=[word.text.lower() for word in doc if word.is_stop==False]
-        
-        verbs, obj = words
-        print("Verb: ", verbs, " Obj: ", obj)
-        '''token=nlp("start")
-        similarity_start = token.similarity(nlp(verbs))
-        token=nlp("click")
-        similarity_click = token.similarity(nlp(verbs))
-        print("Similarity with \'start\': ", similarity_start)
-        print("Similarity with \'click\': ", similarity_click)'''
-        apps=[]
-        #if float(similarity_start)>0.5:
-        if verbs=='start':
-            start_app("chrome")
-        #elif float(similarity_click)>0.5:
-        elif verbs=='click':
-            time.sleep(2)
-            img = PIL.ImageGrab.grab()
-            imgplot = plt.imshow(img)
-            data=pytesseract.image_to_data(img)
-        
-            data=data.split()
-            #print(data)
-            
-            for i in range(len(data)):
-                if obj in data[i].lower():
-                    print("Match Found")
-                    #coord_x = int(data[i-5]) + int(data[i-3]/2)
-                    #coord_y = int(data[i-4]) + int(data[i-2]/2)
-                    coord_x = int(data[i-5]) + int(int(data[i-3])/2)
-                    coord_y = int(data[i-4]) + int(int(data[i-2])/2)
-                    mouse.click(button="left",coords=(coord_x,coord_y))
-                    print("Mouse Clicked")
-                    break
-        time.sleep(5)
+    winsound.Beep(frequency, duration)
+    #time.sleep(1)
+    query = str(speech.press_record())       #converting speech to text using speech_to_text API 
+    #query=input("Enter Command (Type exit to quit): ")
+    if query.lower()=='exit':
+        break
+    else:
+        print(query) 
+    
+    doc=nlp(query)
+    
+    if not noun(doc):
+        pass
+    else:
+        name=noun(doc)[0]
+    if not adj(doc):
+        pass
+    else:
+        task=adj(doc)[0]
+      
+    if not verb(doc):
+        pass
+    else:
+        do=verb(doc)[0]
+    
+    words=[word.text.lower() for word in doc if word.is_stop==False]
+    words=list(words)
+    #verbs, obj = words[0], ' '.join(words[1:])
+    verbs, obj = words[0], words[1:]
+    print(words)
+    print("Verb: ", verbs, " Obj: ", obj)
+    '''token=nlp("start")
+    similarity_start = token.similarity(nlp(verbs))
+    token=nlp("click")
+    similarity_click = token.similarity(nlp(verbs))
+    print("Similarity with \'start\': ", similarity_start)
+    print("Similarity with \'click\': ", similarity_click)'''
+    apps=[]
+    #if float(similarity_start)>0.5:
+    if verbs=='start' or verbs=='open' or verbs=='launch':
+        for x in obj:
+            start_app(x)
+    #elif float(similarity_click)>0.5:
+    elif verbs=='click':
+        single_click(obj)
+    elif verbs=='wait':
+        wait(obj)
+    
+    time.sleep(5)
 
 
 #imge = Image.open(img)
