@@ -63,7 +63,7 @@ def start_app(app_name):
                 except:
                     continue
                     
-def single_click(text):
+def user_single_click(text):
     time.sleep(0.5)
     img = PIL.ImageGrab.grab()
     #imgplot = plt.imshow(img)
@@ -80,9 +80,29 @@ def single_click(text):
             coord_x = int(data[i-5]) + int(int(data[i-3])/2)
             coord_y = int(data[i-4]) + int(int(data[i-2])/2)
             mouse.click(button="left",coords=(coord_x,coord_y))
-            print("Mouse Clicked")
+            print("Mouse Clicked at: (" ,coord_x,",", coord_y,")")
             break
+        
+def user_double_click(text):
+    time.sleep(0.5)
+    img = PIL.ImageGrab.grab()
+    #imgplot = plt.imshow(img)
+    data=pytesseract.image_to_data(img)
 
+    data=data.split()
+    #print(data)
+    
+    for i in range(len(data)):
+        if ' '.join(text) in data[i].lower():
+            print("Match Found")
+            #coord_x = int(data[i-5]) + int(data[i-3]/2)
+            #coord_y = int(data[i-4]) + int(data[i-2]/2)
+            coord_x = int(data[i-5]) + int(int(data[i-3])/2)
+            coord_y = int(data[i-4]) + int(int(data[i-2])/2)
+            mouse.double_click(button="left",coords=(coord_x,coord_y))
+            print("Double Clicked at: (" ,coord_x,",", coord_y,")")
+            break
+        
 def wait(text):
     for i in range(len(text)):
             if text[i]=='seconds' or text[1]=='second':
@@ -136,7 +156,9 @@ while True:
             start_app(x)
     #elif float(similarity_click)>0.5:
     elif verbs=='click':
-        single_click(obj)
+        user_single_click(obj)
+    elif verbs=="double" or verb=='doubleclick':
+        user_double_click(obj[1:])
     elif verbs=='wait':
         wait(obj)
     
