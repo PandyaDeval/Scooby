@@ -12,8 +12,10 @@ import pytesseract
 import winsound
 pytesseract.pytesseract.tesseract_cmd='C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
-frequency = 350
-duration = 500
+
+voice_cmd=1
+frequency = 1000
+duration = 1000
 
 #font = ImageFont.truetype('', size=10)
 font = ImageFont.truetype("arial.ttf", 25)
@@ -91,15 +93,20 @@ def user_single_click(text):
             coords_list.append((coord_x,coord_y))
             count += 1
     
+    #if count>2:
     img.show()
     winsound.Beep(frequency, duration)
-    #im_no = int(input("Enter The number of image to select: "))
-    #time.sleep(2)
+    #if voice_cmd:
     im_no = str(speech.press_record())
-    print(im_no)
-    SendKeys("%{TAB}")
+    #else:
+     #   im_no = int(input("Enter The number of image to select: "))
+      #  time.sleep(2)
+    #print(im_no)
+    SendKeys("%{F4}")
     time.sleep(1)
     mouse.click(button='left',coords=(coords_list[int(im_no)-1]))
+    #else:
+    #    mouse.click(button='left',coords=(coord_x,coord_y))
     
 def user_double_click(text):
     time.sleep(0.5)
@@ -132,15 +139,21 @@ def user_double_click(text):
             coords_list.append((coord_x,coord_y))
             count += 1
     
+    #if count>2:
     img.show()
+    img.save("./images/image.png")
     winsound.Beep(frequency, duration)
-    #im_no = int(input("Enter The number of image to select: "))
-    #time.sleep(2)
+   # if voice_cmd:
     im_no = str(speech.press_record())
-    print(im_no)
-    SendKeys("%{TAB}")
+   # else:
+     #   im_no = int(input("Enter The number of image to select: "))
+     #   time.sleep(2)
+    #print(im_no)
+    SendKeys("%{F4}")
     time.sleep(1)
     mouse.double_click(button='left',coords=(coords_list[int(im_no)-1]))
+    #else:
+    #    mouse.double_click(button='left',coords=(coord_x,coord_y))
         
 def user_right_click(text):
     time.sleep(0.5)
@@ -172,16 +185,20 @@ def user_right_click(text):
             draw.text((coord_x,coord_y),str(count),fill="rgb(240,0,0)",font=font)
             coords_list.append((coord_x,coord_y))
             count += 1
-    
+    #if count>2:
     img.show()
     winsound.Beep(frequency, duration)
-    #im_no = int(input("Enter The number of image to select: "))
-    #time.sleep(2)
+    #if voice_cmd:
     im_no = str(speech.press_record())
-    print(im_no)
-    SendKeys("%{TAB}")
+    #else:
+     #   im_no = int(input("Enter The number of image to select: "))
+      #  time.sleep(2)
+    #print(im_no)
+    SendKeys("%{F4}")
     time.sleep(1)
     mouse.click(button='right',coords=(coords_list[int(im_no)-1]))
+    #else:
+    #    mouse.click(button='right',coords=(coord_x,coord_y))
         
 def keyboard_ip(text):
     for x in text:
@@ -199,9 +216,12 @@ def wait(text):
 while True:
     winsound.Beep(frequency, duration)
     #time.sleep(1)
+    #if voice_cmd:
     query = str(speech.press_record())       #converting speech to text using speech_to_text API 
-    #query=input("Enter Command (Type exit to quit): ")
-    #time.sleep(3)
+    time.sleep(3)
+    #else:
+    #    query=input("Enter Command (Type exit to quit): ")
+    #    time.sleep(3)
     if query.lower()=='exit' or query.lower()=='quit':
         break
     else:
@@ -278,7 +298,7 @@ while True:
             SendKeys("% down")
         elif obj==["delete"]:
             SendKeys("{DELETE down} {DELETE up}")
-    elif verbs=="enter" and obj=="url":
+    elif verbs=="enter" and obj==["url"]:
         SendKeys("^l")
     elif verbs=='wait':
         wait(obj)
