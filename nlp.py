@@ -10,7 +10,7 @@ import re, time, math
 import spacy
 import speech_recognition as sr
 import pyaudio
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 import PIL
 import cv2
 import matplotlib.pyplot as plt
@@ -72,12 +72,12 @@ def start_app(app_name):
 def user_single_click(text):
     time.sleep(0.5)
     img = PIL.ImageGrab.grab()
-    draw = ImageDraw.Draw(img)
     #imgplot = plt.imshow(img)
     data=pytesseract.image_to_data(img)
 
     data=data.split()
     #print(data)
+    draw = ImageDraw.Draw(img)
     coords_list=[]
     count=1
     '''for i in range(len(data)):
@@ -116,9 +116,12 @@ def user_double_click(text):
     data=pytesseract.image_to_data(img)
 
     data=data.split()
-    print(data)
+    #print(data)
+    draw = ImageDraw.Draw(img)
+    coords_list=[]
+    count=1
     
-    for i in range(len(data)):
+    '''for i in range(len(data)):
         if ' '.join(text) in data[i].lower():
             print("Match Found")
             #coord_x = int(data[i-5]) + int(data[i-3]/2)
@@ -127,7 +130,25 @@ def user_double_click(text):
             coord_y = int(data[i-4]) + int(int(data[i-2])/2)
             mouse.double_click(button="left",coords=(coord_x,coord_y))
             print("Double Clicked at: (" ,coord_x,",", coord_y,")")
-            break
+            break'''
+    for i in range(len(data)):
+        if ' '.join(text) in data[i].lower():
+            print("Match Found")
+            coord_x = int(data[i-5]) + int(int(data[i-3])/2)
+            coord_y = int(data[i-4]) + int(int(data[i-2])/2)
+            draw.text((coord_x,coord_y),str(count),fill="rgb(240,0,0)",font=font)
+            coords_list.append((coord_x,coord_y))
+            count += 1
+    
+    img.show()
+    winsound.Beep(frequency, duration)
+    #im_no = int(input("Enter The number of image to select: "))
+    #time.sleep(2)
+    im_no = str(speech.press_record())
+    print(im_no)
+    SendKeys("%{TAB}")
+    time.sleep(1)
+    mouse.double_click(button='left',coords=(coords_list[int(im_no)-1]))
         
 def user_right_click(text):
     time.sleep(0.5)
@@ -136,9 +157,12 @@ def user_right_click(text):
     data=pytesseract.image_to_data(img)
 
     data=data.split()
-    print(data)
+    #print(data)
+    draw = ImageDraw.Draw(img)
+    coords_list=[]
+    count=1
     
-    for i in range(len(data)):
+    '''for i in range(len(data)):
         if ' '.join(text) in data[i].lower():
             print("Match Found")
             #coord_x = int(data[i-5]) + int(data[i-3]/2)
@@ -147,7 +171,25 @@ def user_right_click(text):
             coord_y = int(data[i-4]) + int(int(data[i-2])/2)
             mouse.click(button="right",coords=(coord_x,coord_y))
             print("Right Clicked at: (" ,coord_x,",", coord_y,")")
-            break
+            break'''
+    for i in range(len(data)):
+        if ' '.join(text) in data[i].lower():
+            print("Match Found")
+            coord_x = int(data[i-5]) + int(int(data[i-3])/2)
+            coord_y = int(data[i-4]) + int(int(data[i-2])/2)
+            draw.text((coord_x,coord_y),str(count),fill="rgb(240,0,0)",font=font)
+            coords_list.append((coord_x,coord_y))
+            count += 1
+    
+    img.show()
+    winsound.Beep(frequency, duration)
+    #im_no = int(input("Enter The number of image to select: "))
+    #time.sleep(2)
+    im_no = str(speech.press_record())
+    print(im_no)
+    SendKeys("%{TAB}")
+    time.sleep(1)
+    mouse.click(button='right',coords=(coords_list[int(im_no)-1]))
         
 def keyboard_ip(text):
     for x in text:
