@@ -10,7 +10,7 @@ import re, time, math
 import spacy
 import speech_recognition as sr
 import pyaudio
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 import PIL
 import cv2
 import matplotlib.pyplot as plt
@@ -23,8 +23,8 @@ pytesseract.pytesseract.tesseract_cmd='C:\\Program Files\\Tesseract-OCR\\tessera
 frequency = 1500
 duration = 1000
 
-draw = ImageDraw.Draw(image)
-font = ImageFont.truetype('Roboto-Bold.ttf', size=10)
+#font = ImageFont.truetype('', size=10)
+font = ImageFont.truetype("arial.ttf", 25)
 nlp=spacy.load('en') 
 nlp.vocab["go"].is_stop = False
 nlp.vocab["back"].is_stop = False
@@ -64,6 +64,7 @@ def start_app(app_name):
                     app_path = line[1][:-1] + app_name
                     #print(app_path)
                     app=Application().start(app_path + " --renderer-force-accessibility")
+                    apps.append(app)
                     break
                 except:
                     continue
@@ -71,13 +72,15 @@ def start_app(app_name):
 def user_single_click(text):
     time.sleep(0.5)
     img = PIL.ImageGrab.grab()
+    draw = ImageDraw.Draw(img)
     #imgplot = plt.imshow(img)
     data=pytesseract.image_to_data(img)
 
     data=data.split()
     #print(data)
-    
-    for i in range(len(data)):
+    coords_list=[]
+    count=1
+    '''for i in range(len(data)):
         if ' '.join(text) in data[i].lower():
             print("Match Found")
             #coord_x = int(data[i-5]) + int(data[i-3]/2)
@@ -86,8 +89,26 @@ def user_single_click(text):
             coord_y = int(data[i-4]) + int(int(data[i-2])/2)
             mouse.click(button="left",coords=(coord_x,coord_y))
             print("Mouse Clicked at: (" ,coord_x,",", coord_y,")")
-            break
-        
+            break'''
+    for i in range(len(data)):
+        if ' '.join(text) in data[i].lower():
+            print("Match Found")
+            coord_x = int(data[i-5]) + int(int(data[i-3])/2)
+            coord_y = int(data[i-4]) + int(int(data[i-2])/2)
+            draw.text((coord_x,coord_y),str(count),fill="rgb(240,0,0)",font=font)
+            coords_list.append((coord_x,coord_y))
+            count += 1
+    
+    img.show()
+    winsound.Beep(frequency, duration)
+    #im_no = int(input("Enter The number of image to select: "))
+    #time.sleep(2)
+    im_no = str(speech.press_record())
+    print(im_no)
+    SendKeys("%{TAB}")
+    time.sleep(1)
+    mouse.click(button='left',coords=(coords_list[int(im_no)-1]))
+    
 def user_double_click(text):
     time.sleep(0.5)
     img = PIL.ImageGrab.grab()
