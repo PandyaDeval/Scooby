@@ -1,5 +1,10 @@
 import speech_recognition as sr
-import speech
+import speech, time
+
+def nlp_file():
+    import nlp
+
+
 r=sr.Recognizer()
 keyword='Scooby'
 with sr.Microphone() as source:
@@ -9,6 +14,9 @@ with sr.Microphone() as source:
         try:
             text=r.recognize_google(audio)
             if keyword.lower() in text.lower():
-                import nlp
+                print("\'Scooby\' Detected in speech")
+                nlp_file()
         except Exception as e:
             print('speak again')
+            time.sleep(1)
+            continue
