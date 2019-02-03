@@ -1,26 +1,18 @@
 from __future__ import print_function
-import speech_recognition as sr
 import speech
-from os import path
-from pywinauto import Desktop, Application
-from pywinauto.keyboard import SendKeys, KeySequenceError
+from pywinauto import Application
+from pywinauto.keyboard import SendKeys
 #from pywinauto.timings import wait_until
 from pywinauto import mouse
-import re, time, math
+import re, time
 import spacy
-import speech_recognition as sr
-import pyaudio
-from PIL import Image, ImageDraw, ImageFont
+from PIL import ImageDraw, ImageFont
 import PIL
-import cv2
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
 import pytesseract
-from spacy.lang.en.stop_words import STOP_WORDS
 import winsound
 pytesseract.pytesseract.tesseract_cmd='C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
-frequency = 1500
+frequency = 1000
 duration = 1000
 
 #font = ImageFont.truetype('', size=10)
@@ -273,6 +265,21 @@ while True:
         SendKeys("^x")
     elif verbs=="close":
         SendKeys("%{F4}")
+    elif verbs=="submit":
+        SendKeys("{ENTER}")
+    if verbs=="press":
+        if obj==["enter"]:
+            SendKeys("{ENTER}")
+        elif obj==["escape"]:
+            SendKeys("ESC")
+        elif obj==["control"]:
+            SendKeys("^ down")
+        elif obj==["alter"]:
+            SendKeys("% down")
+        elif obj==["delete"]:
+            SendKeys("{DELETE down} {DELETE up}")
+    elif verbs=="enter" and obj=="url":
+        SendKeys("^l")
     elif verbs=='wait':
         wait(obj)
     
