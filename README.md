@@ -14,3 +14,6 @@ Scooby is a voice activated desktop app which targets to achieve complete voice 
   - The app takes care of the rest and opens youtube for you.
   - There are various other features like type,open,launch,double-click,right-click,play and pause the video, etc which are just a voice    command away from being accessed. No need to use keyboard and mouse for any of those tasks!!!
   - Even if there are multiple entries with same name, the program will display a screen-shot with all the entries numbered and you just need to speak the number of the entery you want to access.
+
+
+#### Note: For this application to work, constant network connection is required.
