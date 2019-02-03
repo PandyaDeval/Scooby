@@ -12,8 +12,8 @@ import pytesseract
 import winsound
 pytesseract.pytesseract.tesseract_cmd='C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
-frequency = 1000
-duration = 1000
+frequency = 350
+duration = 500
 
 #font = ImageFont.truetype('', size=10)
 font = ImageFont.truetype("arial.ttf", 25)
